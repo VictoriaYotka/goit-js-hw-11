@@ -19,6 +19,12 @@ async function formSubmitHandler (event) {
 
     const data = await getImages(query);
     console.log(data);
+
+    if(data.length === 0) {
+        Notify.failure("Sorry, there are no images matching your search query. Please try again.")
+        return
+    }
+    
     makeImagesMarkup(data);
     
 
