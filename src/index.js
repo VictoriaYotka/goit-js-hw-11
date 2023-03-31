@@ -1,26 +1,17 @@
-import axios from "axios";
+import { getImages } from "./js/fetch_function";
 
 
-async function getImages() {
-const URL = 'https://pixabay.com/api/';
-const options = {
-    params: {
-      key: '34916651-f99371deeade2de9e176e6ceb',
-      q: 'nature',
-      image_type: 'photo',
-      orientation: 'horizontal',
-      safesearch: true,
+
+const formEl  = document.querySelector('#search-form');
+
+formEl.addEventListener('submit', formSubmitHandler);
+
+function formSubmitHandler (event) {
+    event.preventDefault();
+    const query = event.target.elements.searchQuery.value;
+    getImages(query);
+}
 
 
-    }
-  }
 
-    try {
-      const response = await axios.get(URL, options);
-      console.log(response.data.hits);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  getImages()
+  
