@@ -16,7 +16,8 @@ async function getImages(userQuery) {
     
         try {
           const response = await axios.get(URL, options);
-          console.log(response.data.hits);
+          // console.log(response.data.hits);
+          return response.data.hits;
         } catch (error) {
           console.error(error);
         }
