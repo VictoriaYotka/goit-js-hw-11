@@ -1,6 +1,6 @@
 import axios from "axios";
 
-async function getImages(userQuery, number) {
+async function getImages(userQuery, number, quantity) {
     const URL = 'https://pixabay.com/api/';
     
     const options = {
@@ -11,9 +11,11 @@ async function getImages(userQuery, number) {
           orientation: 'horizontal',
           safesearch: true,
           page: number,
-          per_page: 4,
+          per_page: quantity,
         }
       }
+
+      console.log(options.params.page)
     
         try {
           const response = await axios.get(URL, options);

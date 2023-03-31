@@ -7,8 +7,9 @@ const formEl  = document.querySelector('#search-form');
 const galleryEl = document.querySelector('.gallery');
 const loadMoreBtnEl = document.querySelector('.load-more');
 
+const amount = 4;
 let query = '';
-let page = 1;
+let page = 0;
 
 formEl.addEventListener('submit', formSubmitHandler);
 loadMoreBtnEl.addEventListener('click', loadMoreHandler)
@@ -16,16 +17,18 @@ loadMoreBtnEl.addEventListener('click', loadMoreHandler)
 async function formSubmitHandler (event) {
     event.preventDefault();
     deleteMarkup();
+    loadMoreBtnEl.classList.add('is-hidden');
 
     query = event.target.elements.searchQuery.value.trim();
+    page = 1;
 
     if(query === '') {
         console.log('empty!')
         return
     }
 
-    const response = await getImages(query, page);
-    // console.log(response);
+    const response = await getImages(query, page, amount);
+    console.log(response);
     const data = response.hits;
     // console.log(data);
 
@@ -37,19 +40,26 @@ async function formSubmitHandler (event) {
     makeImagesMarkup(data);
     Notify.info(`Hooray! We found ${response.totalHits} images!`);
     page += 1;
+
+    if(response.totalHits > data.length) {
+    loadMoreBtnEl.classList.remove('is-hidden');
+    }
     
 
 }
 
 async function loadMoreHandler () {
-       const response = await getImages(query, page);
+       const response = await getImages(query, page, amount);
     // console.log(response);
     const data = response.hits;
     // console.log(data);
 
     makeImagesMarkup(data);
-  
     page += 1;
+
+    if(data.length <= amount) {
+    loadMoreBtnEl.classList.add('is-hidden');
+    }
 }
 
 function makeImagesMarkup(data) {
