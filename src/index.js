@@ -64,7 +64,7 @@ async function loadMoreHandler () {
 
 function makeImagesMarkup(data) {
     const innerMarkup = data.map(el => `<div class="photo-card">
-    <img src="${el.webformatURL}" alt="${el.tags}" loading="lazy" />
+    <img src="${el.webformatURL}" alt="${el.tags} loading="lazy" />
     <div class="info">
       <p class="info-item">
         <b>Likes</b>
