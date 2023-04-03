@@ -1,5 +1,7 @@
 import { getImages } from "./js/fetch_function";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 
 
@@ -7,9 +9,11 @@ const formEl  = document.querySelector('#search-form');
 const galleryEl = document.querySelector('.gallery');
 const loadMoreBtnEl = document.querySelector('.load-more');
 
-const amount = 4;
+const amount = 40;
 let query = '';
 let page = 0;
+
+let gallery = new SimpleLightbox('.gallery a');
 
 formEl.addEventListener('submit', formSubmitHandler);
 loadMoreBtnEl.addEventListener('click', loadMoreHandler)
@@ -23,12 +27,12 @@ async function formSubmitHandler (event) {
     page = 1;
 
     if(query === '') {
-        console.log('empty!')
+      Notify.failure('Please, write your search query!')
         return
     }
 
     const response = await getImages(query, page, amount);
-    console.log(response);
+    // console.log(response);
     const data = response.hits;
     // console.log(data);
 
@@ -40,6 +44,8 @@ async function formSubmitHandler (event) {
     makeImagesMarkup(data);
     Notify.info(`Hooray! We found ${response.totalHits} images!`);
     page += 1;
+    
+    gallery.refresh();
 
     if(response.totalHits > data.length) {
     loadMoreBtnEl.classList.remove('is-hidden');
@@ -56,15 +62,18 @@ async function loadMoreHandler () {
 
     makeImagesMarkup(data);
     page += 1;
+    gallery.refresh();
 
-    if(data.length <= amount) {
+    if(data.length < amount) {
     loadMoreBtnEl.classList.add('is-hidden');
     }
 }
 
 function makeImagesMarkup(data) {
     const innerMarkup = data.map(el => `<div class="photo-card">
+    <a href="${el.largeImageURL}">
     <img src="${el.webformatURL}" alt="${el.tags} loading="lazy" />
+    </a>
     <div class="info">
       <p class="info-item">
         <b>Likes</b>

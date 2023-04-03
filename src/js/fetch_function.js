@@ -14,8 +14,6 @@ async function getImages(userQuery, number, quantity) {
           per_page: quantity,
         }
       }
-
-      console.log(options.params.page)
     
         try {
           const response = await axios.get(URL, options);
