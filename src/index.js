@@ -1,22 +1,17 @@
-import { getImages } from "./js/fetch_function";
+import Fetch from "./js/fetch_function";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-
-
 
 const formEl  = document.querySelector('#search-form');
 const galleryEl = document.querySelector('.gallery');
 const loadMoreBtnEl = document.querySelector('.load-more');
 
-const amount = 40;
-let query = '';
-let page = 0;
-
-let gallery = new SimpleLightbox('.gallery a');
-
 formEl.addEventListener('submit', formSubmitHandler);
-loadMoreBtnEl.addEventListener('click', loadMoreHandler)
+loadMoreBtnEl.addEventListener('click', loadMoreHandler);
+
+const fetchImages = new Fetch;
+let gallery = new SimpleLightbox('.gallery a');
 
 async function formSubmitHandler (event) {
     event.preventDefault();
@@ -24,26 +19,26 @@ async function formSubmitHandler (event) {
     loadMoreBtnEl.classList.add('is-hidden');
 
     query = event.target.elements.searchQuery.value.trim();
-    page = 1;
+    fetchImages.pageRefresh(); // page = 1;
 
     if(query === '') {
       Notify.failure('Please, write your search query!')
         return
     }
 
-    const response = await getImages(query, page, amount);
+    const response = await fetchImages.getImages(query);
     // console.log(response);
     const data = response.hits;
     // console.log(data);
 
     if(data.length === 0) {
-        Notify.failure("Sorry, there are no images matching your search query. Please try again.")
+        Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         return
     }
 
     makeImagesMarkup(data);
     Notify.info(`Hooray! We found ${response.totalHits} images!`);
-    page += 1;
+    fetchImages.pageIncrement();   // page += 1;
     
     gallery.refresh();
 
@@ -55,19 +50,23 @@ async function formSubmitHandler (event) {
 }
 
 async function loadMoreHandler () {
-       const response = await getImages(query, page, amount);
+       const response = await fetchImages.getImages(query);
     // console.log(response);
     const data = response.hits;
     // console.log(data);
 
     makeImagesMarkup(data);
-    page += 1;
+    fetchImages.pageIncrement();   // page += 1;
     gallery.refresh();
 
-    if(data.length < amount) {
+    const amount = fetchImages.options.params.per_page;
+
+    if((galleryEl.childElementCount / amount) > (response.totalHits / amount)) {
     loadMoreBtnEl.classList.add('is-hidden');
     }
 }
+
+
 
 function makeImagesMarkup(data) {
     const innerMarkup = data.map(el => `<div class="photo-card">
@@ -90,7 +89,7 @@ function makeImagesMarkup(data) {
     </div>
   </div>`).join(' ');
    
-  galleryEl.insertAdjacentHTML('beforeend', innerMarkup) 
+  galleryEl.insertAdjacentHTML('beforeend', innerMarkup);
 }
 
 function deleteMarkup () {

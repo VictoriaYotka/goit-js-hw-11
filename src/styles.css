@@ -97,6 +97,7 @@ b {
 
 .load-more {
     display: inline-flex;
+    margin: 30px 0;
 }
 
 .is-hidden {
