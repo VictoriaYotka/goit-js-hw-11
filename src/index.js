@@ -10,16 +10,19 @@ const loadMoreBtnEl = document.querySelector('.load-more');
 formEl.addEventListener('submit', formSubmitHandler);
 loadMoreBtnEl.addEventListener('click', loadMoreHandler);
 
-const fetchImages = new Fetch;
 let gallery = new SimpleLightbox('.gallery a');
+const fetchImages = new Fetch;
+
+fetchImages.query = formEl.elements.searchQuery.value.trim();
+const {query} = fetchImages;
 
 async function formSubmitHandler (event) {
     event.preventDefault();
     galleryEl.innerHTML = '';
     loadMoreBtnEl.classList.add('is-hidden');
-
-    const query = event.target.elements.searchQuery.value.trim();
     fetchImages.pageRestart(); // page = 1;
+
+    const query = findInputValue();
 
     if(query === '') {
       Notify.failure('Please, write your search query!')
@@ -45,12 +48,10 @@ async function formSubmitHandler (event) {
     if(response.totalHits > data.length) {
     loadMoreBtnEl.classList.remove('is-hidden');
     }
-    
-
 }
 
 async function loadMoreHandler () {
-       const response = await fetchImages.getImages(query);
+       const response = await fetchImages.getImages(findInputValue());
     // console.log(response);
     const data = response.hits;
     // console.log(data);
@@ -66,7 +67,9 @@ async function loadMoreHandler () {
     }
 }
 
-
+function findInputValue () {
+  return formEl.elements.searchQuery.value.trim();
+}
 
 function makeImagesMarkup(data) {
     const innerMarkup = data.map(el => `<div class="photo-card">
