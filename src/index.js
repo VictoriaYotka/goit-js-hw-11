@@ -18,7 +18,7 @@ async function formSubmitHandler (event) {
     galleryEl.innerHTML = '';
     loadMoreBtnEl.classList.add('is-hidden');
 
-    query = event.target.elements.searchQuery.value.trim();
+    const query = event.target.elements.searchQuery.value.trim();
     fetchImages.pageRestart(); // page = 1;
 
     if(query === '') {
