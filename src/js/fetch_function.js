@@ -26,11 +26,10 @@ export default class Fetch {
   }
 
   pageIncrement () {
-    console.log()
     this.options.params.page += 1;
   }
 
-  pageRefresh () {
+  pageRestart () {
     this.options.params.page = 1;
   }
 }

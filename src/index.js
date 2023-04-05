@@ -15,11 +15,11 @@ let gallery = new SimpleLightbox('.gallery a');
 
 async function formSubmitHandler (event) {
     event.preventDefault();
-    deleteMarkup();
+    galleryEl.innerHTML = '';
     loadMoreBtnEl.classList.add('is-hidden');
 
     query = event.target.elements.searchQuery.value.trim();
-    fetchImages.pageRefresh(); // page = 1;
+    fetchImages.pageRestart(); // page = 1;
 
     if(query === '') {
       Notify.failure('Please, write your search query!')
@@ -91,10 +91,3 @@ function makeImagesMarkup(data) {
    
   galleryEl.insertAdjacentHTML('beforeend', innerMarkup);
 }
-
-function deleteMarkup () {
-    galleryEl.innerHTML = ''
-}
-
-
-  
