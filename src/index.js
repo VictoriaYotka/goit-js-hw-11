@@ -60,10 +60,9 @@ async function loadMoreHandler () {
     fetchImages.pageIncrement();   // page += 1;
     gallery.refresh();
 
-    const amount = fetchImages.options.params.per_page;
-
-    if((galleryEl.childElementCount / amount) > (response.totalHits / amount)) {
+    if(galleryEl.childElementCount >= response.totalHits) {
     loadMoreBtnEl.classList.add('is-hidden');
+    Notify.info("We're sorry, but you've reached the end of search results.");
     }
 }
 
@@ -72,23 +71,23 @@ function findInputValue () {
 }
 
 function makeImagesMarkup(data) {
-    const innerMarkup = data.map(el => `<div class="photo-card">
-    <a href="${el.largeImageURL}">
-    <img src="${el.webformatURL}" alt="${el.tags} loading="lazy" />
+    const innerMarkup = data.map(({ largeImageURL, webformatURL, tags, likes, views, comments, downloads }) => `<div class="photo-card">
+    <a href="${largeImageURL}">
+    <img src="${webformatURL}" alt="${tags} loading="lazy" />
     </a>
     <div class="info">
       <p class="info-item">
         <b>Likes</b>
-      ${el.likes}</p>
+      ${likes}</p>
       <p class="info-item">
         <b>Views</b>
-      ${el.views}</p>
+      ${views}</p>
       <p class="info-item">
         <b>Comments</b>
-      ${el.comments}</p>
+      ${comments}</p>
       <p class="info-item">
         <b>Downloads</b>
-      ${el.downloads}</p>
+      ${downloads}</p>
     </div>
   </div>`).join(' ');
    
